@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Onion Cytology
 
-## Getting Started
-
-First, run the development server:
+Cell biology for NEET / AIIMS / JIPMER / old UP CPMT, taught in peelable layers.
+Next.js (App Router) + TypeScript, fully static.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev     # http://localhost:3000
+npm run build   # also checks every link in the content graph
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## The onion
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Every concept has five layers, each a real section with its own anchor (`/study/mitochondria#l2`):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Layer | Name  | What goes in it |
+| ----- | ----- | --------------- |
+| L0    | Skin  | One everyday sentence |
+| L1    | Flesh | Class 9–11 story, analogy, the labelled figure |
+| L2    | Core  | NEET-ready facts |
+| L3    | Seed  | Traps, exceptions, numbers, comparisons |
+| L4    | Root  | Why it is true (optional) |
 
-## Learn More
+Readers change depth with the bar, the “Peel” button, or `[` / `]`. `/` focuses search.
 
-To learn more about Next.js, take a look at the following resources:
+## Editing content (`content/`)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| File | Holds |
+| ---- | ----- |
+| `concepts/*.ts` | Concept nodes: layers, `recall`, `compare`, `prerequisite`, `seeAlso`, `next`, `figures`, `examTags` |
+| `terms.ts` | Glossary: hover line, pronunciation, per-layer lines, “don’t confuse with”, exam line |
+| `figures.ts` | Figure metadata and hotspot boxes (percentages of the drawing) |
+| `questions.ts` | Original MCQs, each tagged to a concept **and** the layer it tests |
+| `paths.ts` | Study paths (ordered concept ids) |
+| `index.ts` | Shelves on the home page, search index, `assertContent()` link checker |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+In any layer text, `[[termId]]` or `[[termId|shown words]]` becomes a hoverable word.
+`npm run build` fails with a list if a term, concept, figure or path id does not exist.
 
-## Deploy on Vercel
+Drawings are original SVG in `components/FigureArt.tsx`, 1000 units wide. Keep the visual language:
+membrane = double line, DNA = dashed, plant-only parts = green tint. If you move a part, move its hotspot box in `figures.ts`.
+To swap in a licensed micrograph later, keep the same hotspot JSON and replace the art.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Honesty rules
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Original teaching text, diagrams and questions only. NCERT is cited as a study pointer
+(`ncertPointer`), never copied. The PDFs in `../NCERT` are author reference, not site pages.
+
+## State
+
+No accounts in v1. Depth preference, per-concept progress, the error log and weak words live in
+`localStorage` (`lib/store.ts`) and survive only in that browser.

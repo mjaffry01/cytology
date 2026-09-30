@@ -1,103 +1,105 @@
-import Image from "next/image";
+import Link from "next/link";
+import { conceptById, paths, plain, shelves } from "@/content";
+import { LAYER_HINTS, LAYER_LABELS, type LayerId } from "@/content/schema";
+import { OnionMark } from "@/components/OnionMark";
+import { PathProgress, ProgressMark } from "@/components/Progress";
+
+const LAYERS: LayerId[] = ["l0", "l1", "l2", "l3", "l4"];
+const EXAMPLE: Record<LayerId, string> = {
+  l0: "Mitochondria are the cell’s power plants.",
+  l1: "A sausage with two skins; the inner one is crumpled into cristae.",
+  l2: "Double membrane, own circular DNA, 70S ribosomes: semi-autonomous.",
+  l3: "Trap: the Krebs cycle runs in the matrix, not on the cristae.",
+  l4: "Why: an engulfed bacterium that never left — the endosymbiont story.",
+};
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="home">
+      <section className="hero">
+        <div>
+          <h1>
+            Peel the cell,
+            <br />
+            one layer at a time.
+          </h1>
+          <p className="lede">
+            Cell biology for NEET, AIIMS, JIPMER and the old UP CPMT. Every idea starts as one everyday sentence and goes
+            as deep as you want: classroom story, exam facts, traps, and the reason it is true.
+          </p>
+          <p className="hero-cta">
+            <Link href="/study/mitochondria" className="btn primary">
+              Start with mitochondria
+            </Link>
+            <Link href="/study/mitosis" className="btn">
+              Or mitosis
+            </Link>
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <ol className="layer-legend" aria-label="The five layers">
+          {LAYERS.map((l, i) => (
+            <li key={l} style={{ ["--i" as string]: i }}>
+              <OnionMark depth={i} size={30} />
+              <div>
+                <p className="legend-name">
+                  L{i} {LAYER_LABELS[l]} <span className="muted small">· {LAYER_HINTS[l]}</span>
+                </p>
+                <p className="legend-eg">{EXAMPLE[l]}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="paths" aria-labelledby="paths-h">
+        <h2 id="paths-h">Study paths</h2>
+        <div className="path-grid">
+          {paths.map((p) => (
+            <Link key={p.id} href={`/paths/${p.id}`} className="path-card">
+              <strong>{p.title}</strong>
+              <span className="small">{p.blurb}</span>
+              <span className="path-steps small muted">
+                {p.steps.map((s) => conceptById[s]?.title).join(" → ")}
+              </span>
+              <PathProgress steps={p.steps} />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section id="shelves" aria-labelledby="shelves-h">
+        <h2 id="shelves-h">All concepts</h2>
+        {shelves.map((s) => (
+          <div key={s.title} className="shelf">
+            <h3>
+              {s.title} <span className="muted small">· {s.pointer}</span>
+            </h3>
+            <ul className="concept-grid">
+              {s.ids.map((id) => {
+                const c = conceptById[id];
+                return (
+                  <li key={id}>
+                    <Link href={`/study/${id}`} className="concept-card">
+                      <span className="concept-card-top">
+                        <strong>{c.title}</strong>
+                        <ProgressMark conceptId={id} max={c.layers.l4?.length ? 4 : 3} />
+                      </span>
+                      <span className="small">{plain(c.layers.l0)}</span>
+                      <span className="tags small">
+                        {c.examTags.map((t) => (
+                          <span key={t} className="tag">
+                            {t.toUpperCase()}
+                          </span>
+                        ))}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </section>
     </div>
   );
 }
